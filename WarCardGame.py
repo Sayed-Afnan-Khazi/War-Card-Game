@@ -28,10 +28,12 @@ class Deck():
         shuffle(self.DeckList)
         print("Shuffle Successful.")
     
-    def deal(self,n,player_hand):
-        '''Deals n cards as a list to the list player_hand'''
+    def deal(self,n):
+        '''Deals and returns n cards as a list'''
+        player_hand=[]
         for x in range(n):
             player_hand.append(self.DeckList.pop())
+        return player_hand
 
 class Player():
 
@@ -39,7 +41,7 @@ class Player():
         '''Name as Player's name and Hand as the dealed list of cards from Deck.deal()'''
         self.hand=hand
         self.name=name
-#play,add,add mulitple
+
     def __str__(self):
         return "Player {} has {} number of cards".format(self.name,len(self.hand))
     
@@ -56,6 +58,101 @@ class Player():
     def add_multiple(self,new_cards_list):
         '''Adding a newly acquired set of cards (from a war situation) to the Player's hand'''
         self.hand.extend(new_cards_list)
+
+# -Game-Logic-
+
+# Creating and Shuffling the deck
+
+new_deck=Deck()
+new_deck.shuffledeck()
+
+# Creating the players and dealing cards to them
+
+Player1=Player(input("Enter Player 1's name:"),new_deck.deal(26))
+Player2=Player(input("Enter Player 2's name:"),new_deck.deal(26))
+
+# -Game - Start-
+
+game_on=True
+
+while game_on:
+    
+    # Status Update on the game
+
+    print(f"{Player1.name} has {len(Player1.hand)} number of cards.")
+    print(f"{Player2.name} has {len(Player2.hand)} number of cards.")
+
+    # Checking if either player has lost
+    
+    if len(Player1.hand)==0:
+        print(f"{Player2.name} wins!")
+        game_on=False
+        break
+    elif len(Player2.hand)==0:
+        print(f"{Player1.name} wins!")
+        game_on=False
+        break
+
+    # Players play cards
+
+    played_cards=[Player1.play(),Player2.play()]
+    print(f"{Player1.name} played:")
+    print(played_cards[0])
+    print(f"\n {Player2.name} played:")
+    print(played_cards[1])
+    input("Press Enter to continue...")
+    
+    # Checking for War condition
+
+    if played_cards[0].value == played_cards[1].value:
+
+        print("Tie! War has begun.")
+        input("Press Enter to continue...")
+        at_war=True
+        adding_cards=[]
+
+        while at_war: #Error here where not all cards are added to the winner
+
+            # Players play cards
+
+            played_cards=[Player1.play(),Player2.play()]
+            print(f"{Player1.name} played:")
+            print(played_cards[0])
+            print(f"\n {Player2.name} played:")
+            print(played_cards[1])
+            adding_cards.append(played_cards[0])
+            adding_cards.append(played_cards[1])
+
+            # Checking for Repeated War Condition
+
+            if played_cards[0].value == played_cards[1].value:
+                print("Tie again. Play another set of cards.")
+                continue
+            elif played_cards[0].value > played_cards[1].value:
+                Player1.add_multiple(adding_cards)
+                print(f"{Player1.name} won this war! \n A total of {len(adding_cards)} have been added to their deck.")
+                input("Press Enter to continue...")
+                break
+            elif played_cards[0].value < played_cards[1].value:
+                Player2.add_multiple(adding_cards)
+                print(f"{Player2.name} won this war! \n A total of {len(adding_cards)} have been added to their deck.")
+                input("Press Enter to continue...")
+                break
+
+    elif played_cards[0].value > played_cards[1].value:
+        Player1.add(played_cards[1])
+        Player1.add(played_cards[0])
+        print(f"{Player1.name} won this round! \n The",played_cards[1], "have been added to their deck.")
+        input("Press Enter to continue...")
+        continue
+
+    elif played_cards[0].value < played_cards[1].value:
+        Player2.add(played_cards[0])
+        Player2.add(played_cards[1])
+        print(f"{Player2.name} won this round! \n The", played_cards[0], "have been added to their deck.")
+        input("Press Enter to continue...")
+        continue
+
 
 # Test code
 # new_player=Player("John")
