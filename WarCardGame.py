@@ -74,83 +74,100 @@ Player2=Player(input("Enter Player 2's name:"),new_deck.deal(26))
 # -Game - Start-
 
 game_on=True
+round_number=0
 
 while game_on:
     
     # Status Update on the game
 
-    print(f"{Player1.name} has {len(Player1.hand)} number of cards.")
-    print(f"{Player2.name} has {len(Player2.hand)} number of cards.")
+    # print(f"{Player1.name} has {len(Player1.hand)} number of cards.")
+    # print(f"{Player2.name} has {len(Player2.hand)} number of cards.")
 
     # Checking if either player has lost
     
     if len(Player1.hand)==0:
         print(f"{Player2.name} wins!")
-        game_on=False
         break
     elif len(Player2.hand)==0:
         print(f"{Player1.name} wins!")
-        game_on=False
         break
+
+    round_number+=1
+    print(f"Round number: {round_number}")
 
     # Players play cards
 
     played_cards=[Player1.play(),Player2.play()]
-    print(f"{Player1.name} played:")
-    print(played_cards[0])
-    print(f"\n {Player2.name} played:")
-    print(played_cards[1])
-    input("Press Enter to continue...")
+    # print(f"{Player1.name} played:")
+    # print(played_cards[0])
+    # print(f"\n {Player2.name} played:")
+    # print(played_cards[1])
+    # input("Press Enter to continue...")
     
     # Checking for War condition
 
     if played_cards[0].value == played_cards[1].value:
 
         print("Tie! War has begun.")
-        input("Press Enter to continue...")
+        # input("Press Enter to continue...")
+
+        # Checking if players have enough cards to start a war
+
+        if len(Player1.hand)<=7:
+            print(f"{Player1.name} Didn't have enough cards to start a war. \n {Player2.name} wins!")
+            break
+        if len(Player2.hand)<=7:
+            print(f"{Player2.name} Didn't have enough cards to start a war. \n {Player1.name} wins!")
+            break
         at_war=True
         adding_cards=[]
+        adding_cards.extend(played_cards)
 
-        while at_war: #Error here where not all cards are added to the winner
+        while at_war: 
 
             # Players play cards
 
-            played_cards=[Player1.play(),Player2.play()]
-            print(f"{Player1.name} played:")
-            print(played_cards[0])
-            print(f"\n {Player2.name} played:")
-            print(played_cards[1])
-            adding_cards.append(played_cards[0])
-            adding_cards.append(played_cards[1])
+            player1_played_cards=[]
+            player2_played_cards=[]
+            for x in range(5):
+                player1_played_cards.append(Player1.play())
+                player2_played_cards.append(Player2.play())
+
+            # print(f"{Player1.name} played:")
+            # print(played_cards[0])
+            # print(f"\n {Player2.name} played:")
+            # print(played_cards[1])
 
             # Checking for Repeated War Condition
 
-            if played_cards[0].value == played_cards[1].value:
-                print("Tie again. Play another set of cards.")
+            if player1_played_cards[-1].value == player2_played_cards[-1].value:
+                # print("Tie again. Play another set of cards.")
                 continue
-            elif played_cards[0].value > played_cards[1].value:
+            elif player1_played_cards[-1].value > player2_played_cards[-1].value:
+                # print(adding_cards) #Debugging
                 Player1.add_multiple(adding_cards)
-                print(f"{Player1.name} won this war! \n A total of {len(adding_cards)} have been added to their deck.")
-                input("Press Enter to continue...")
+                # print(f"{Player1.name} won this war! \n A total of {len(adding_cards)} cards have been added to their deck.")
+                # input("Press Enter to continue...")
                 break
             elif played_cards[0].value < played_cards[1].value:
+                # print(adding_cards) #Debugging
                 Player2.add_multiple(adding_cards)
-                print(f"{Player2.name} won this war! \n A total of {len(adding_cards)} have been added to their deck.")
-                input("Press Enter to continue...")
+                # print(f"{Player2.name} won this war! \n A total of {len(adding_cards)} cards have been added to their deck.")
+                # input("Press Enter to continue...")
                 break
 
     elif played_cards[0].value > played_cards[1].value:
-        Player1.add(played_cards[1])
-        Player1.add(played_cards[0])
-        print(f"{Player1.name} won this round! \n The",played_cards[1], "have been added to their deck.")
-        input("Press Enter to continue...")
+        # print(played_cards) #Debugging
+        Player1.add_multiple(played_cards)
+        # print(f"{Player1.name} won this round! \n The",played_cards[1], "have been added to their deck.")
+        # input("Press Enter to continue...")
         continue
 
     elif played_cards[0].value < played_cards[1].value:
-        Player2.add(played_cards[0])
-        Player2.add(played_cards[1])
-        print(f"{Player2.name} won this round! \n The", played_cards[0], "have been added to their deck.")
-        input("Press Enter to continue...")
+        # print(played_cards) #Debugging
+        Player2.add_multiple(played_cards)
+        # print(f"{Player2.name} won this round! \n The", played_cards[0], "have been added to their deck.")
+        # input("Press Enter to continue...")
         continue
 
 
