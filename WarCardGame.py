@@ -53,10 +53,10 @@ class Player():
     def add(self,new_cards_list):
         '''Adding a newly acquired (set of) card(s) to the Player's hand
            Works for both a single card or a set of cards'''
-        if len(new_cards_list)==1:
-            self.hand.append(new_cards_list)
-        else:
+        if type(new_cards_list)==type([]):
             self.hand.extend(new_cards_list)
+        else:
+            self.hand.append(new_cards_list)
 
 # -Game-Logic-
 
@@ -95,12 +95,14 @@ while game_on:
     player1_played_cards.append(Player1.play())
     player2_played_cards.append(Player2.play())
     
+    # Considering War has already occurred, if it hasn't then we break
+
     at_war=True
 
     while at_war:
 
 
-        if player1_played_cards[-1].value > player2_played_cards[-1].value: # Error here
+        if player1_played_cards[-1].value > player2_played_cards[-1].value: 
             Player1.add(player1_played_cards)
             Player1.add(player2_played_cards)
 
@@ -129,4 +131,7 @@ while game_on:
                 for x in range(5):
                     player1_played_cards.append(Player1.play())
                     player2_played_cards.append(Player2.play())
+                continue # Not needed
+
+# -Game - End -
 
